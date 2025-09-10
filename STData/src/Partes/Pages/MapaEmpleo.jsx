@@ -62,6 +62,19 @@ const aglomeradoAProvincia = {
   "Resto Tucumán": "Tucumán"
 };
 
+// Provincias ordenadas alfabéticamente con "Todas" al principio
+const provincias = [
+  "Todas","Buenos Aires","Catamarca","Chaco","Chubut","Córdoba","Corrientes","Entre Ríos","Formosa",
+  "Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan",
+  "San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán",
+  "Ciudad Autónoma de Buenos Aires"
+];
+
+const provinciasOrdenadas = [
+  "Todas",
+  ...provincias.filter(p => p !== "Todas").sort((a,b) => a.localeCompare(b,'es'))
+];
+
 export default function MapaEmpleo() {
   const [año, setAño] = useState(2016);
   const [estado, setEstado] = useState([]);
@@ -70,7 +83,6 @@ export default function MapaEmpleo() {
   const [grupoActivo, setGrupoActivo] = useState(null); 
   const [puntos, setPuntos] = useState([]);
   const [provincia, setProvincia] = useState("Todas");
-
 
   function toggleSeleccion(valor, grupo, setGrupo, nombreGrupo) {
     if (!grupoActivo) {
@@ -205,37 +217,14 @@ export default function MapaEmpleo() {
 
         {/* Columna centro */}
         <div className="columna-centro">
-            <div className="bloque-select-simple">
+          <div className="bloque-select-simple">
             <label htmlFor="provincia">Provincia</label>
             <select id="provincia" value={provincia} onChange={e => setProvincia(e.target.value)}>
-              <option value="Todas">Todas</option>
-              <option value="Buenos Aires">Buenos Aires</option>
-              <option value="Santa Fe">Santa Fe</option>
-              <option value="Córdoba">Córdoba</option>
-              <option value="Mendoza">Mendoza</option>
-              <option value="Entre Ríos">Entre Ríos</option>
-              <option value="Chaco">Chaco</option>
-              <option value="Misiones">Misiones</option>
-              <option value="Formosa">Formosa</option>
-              <option value="Santiago del Estero">Santiago del Estero</option>
-              <option value="Jujuy">Jujuy</option>
-              <option value="Salta">Salta</option>
-              <option value="Tucumán">Tucumán</option>
-              <option value="San Juan">San Juan</option>
-              <option value="San Luis">San Luis</option>
-              <option value="La Rioja">La Rioja</option>
-              <option value="Catamarca">Catamarca</option>
-              <option value="Río Negro">Río Negro</option>
-              <option value="Neuquén">Neuquén</option>
-              <option value="Chubut">Chubut</option>
-              <option value="Santa Cruz">Santa Cruz</option>
-              <option value="Tierra del Fuego">Tierra del Fuego</option>
-              <option value="La Pampa">La Pampa</option>
-              <option value="Ciudad Autónoma de Buenos Aires">CABA</option>
+              {provinciasOrdenadas.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
             </select>
           </div>
-
-
 
           <div className="grupo-filtro">
             <p className="titulo-filtro">Estado laboral</p>
@@ -280,11 +269,20 @@ export default function MapaEmpleo() {
           </div>
         </div>
 
+        
+              <div className="texto-abajo">
+    La estructura laboral argentina se despliega provincia por provincia, año tras año, revelando cómo se distribuyen las personas ocupadas y desocupadas, el trabajo formal e informal, y las diferencias entre géneros. Cada selección permite observar cómo varía el empleo en función del territorio, el tiempo y las condiciones sociales. Los datos provienen de la Encuesta Permanente de Hogares (EPH), relevada por el INDEC y actualizada hasta el primer trimestre de 2025.
+  </div>
+
+
+
         {/* Columna derecha */}
         <div className="columna-derecha">
           <MapChart puntos={puntos} />
         </div>
       </div>
+
+
     </div>
   );
 }
