@@ -9,12 +9,12 @@ export default function GraficoTorta({ data }) {
       {data.length === 0 ? (
         <p>No hay datos disponibles</p>
       ) : (
-        <PieChart width={350} height={280}>
+        <PieChart width={450} height={370}>
           <Pie
             data={data}
             dataKey="value"
             nameKey="name"
-            outerRadius={90}
+            outerRadius={130}
             label={(entry) => `${entry.percentage || 100}%`}
           >
             {data.map((entry, index) => (
@@ -22,7 +22,7 @@ export default function GraficoTorta({ data }) {
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value, name, props) => [`${value}%`, '']} 
+            formatter={(value, name, props) => [`${value}`, 'Personas']} 
           />
           <Legend />
         </PieChart>

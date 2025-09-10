@@ -5,8 +5,8 @@
   padding: 0px;
   text-align: center;
   width: 100%; /* ocupa todo el ancho de la columna */
-  max-width:350px; /* límite máximo de tamaño */
-  margin-left: 9%;
+  max-width:450px; /* límite máximo de tamaño */
+  margin-left: 5%;
 }
 .grafico-torta h3 {
   font-size: 20px;
