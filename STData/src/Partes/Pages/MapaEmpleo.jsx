@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import MapChart from '../Charts/MapChart';
-import provinciasCoords from '../../Data/provinciasCoords.js';
 import Papa from 'papaparse';
 import './MapaEmpleo.css';
+import GraficoTorta from '../Charts/GraficoTorta';
 
 // Mapeo aglomerados -> provincias
 const aglomeradoAProvincia = {
@@ -67,19 +67,18 @@ export default function MapaEmpleo() {
   const [estado, setEstado] = useState([]);
   const [tipo, setTipo] = useState([]);
   const [genero, setGenero] = useState([]);
-  const [grupoActivo, setGrupoActivo] = useState(null); // 'estado' | 'tipo' | 'genero' | null
+  const [grupoActivo, setGrupoActivo] = useState(null); 
   const [puntos, setPuntos] = useState([]);
+  const [provincia, setProvincia] = useState("Todas");
+
 
   function toggleSeleccion(valor, grupo, setGrupo, nombreGrupo) {
     if (!grupoActivo) {
-      // No había grupo activo → activo este
       setGrupoActivo(nombreGrupo);
       setGrupo([valor]);
       return;
     }
-
     if (grupoActivo === nombreGrupo) {
-      // Ya estoy en el mismo grupo → toggle normal
       if (grupo.includes(valor)) {
         setGrupo(grupo.filter(v => v !== valor));
         if (grupo.length === 1) setGrupoActivo(null);
@@ -87,11 +86,9 @@ export default function MapaEmpleo() {
         setGrupo([...grupo, valor]);
       }
     } else {
-      // Cambio de grupo → limpio los demás y activo este
       setEstado([]);
       setTipo([]);
       setGenero([]);
-
       setGrupo([valor]);
       setGrupoActivo(nombreGrupo);
     }
@@ -114,17 +111,17 @@ export default function MapaEmpleo() {
             }
             if (!prov) return null;
 
-            const estadoVal = d.ESTADO?.trim() || null;
+            if (provincia !== "Todas" && prov !== provincia) return null;
 
+            const estadoVal = d.ESTADO?.trim() || null;
             const rawVal = Number(String(d.PP07G4).trim());
             let tipoVal = null;
             if (!isNaN(rawVal)) {
               if (Math.round(rawVal) === 1) tipoVal = 'Formal';
               else if (Math.round(rawVal) === 2) tipoVal = 'Informal';
             }
-
             const generoVal = d.CH04?.trim() === 'Mujer' ? 'Femenino' : 'Masculino';
-
+            
             return { prov, estadoVal, tipoVal, generoVal };
           })
           .filter(d => d !== null);
@@ -132,9 +129,9 @@ export default function MapaEmpleo() {
         const puntosMap = [];
 
         const grupos = [
-          { data: estado, key: 'estadoVal', colors: { 'Ocupado': '#00BFFF', 'Desocupado': '#FFD700' } },
-          { data: tipo, key: 'tipoVal', colors: { 'Formal': '#00BFFF', 'Informal': '#FFD700' } },
-          { data: genero, key: 'generoVal', colors: { 'Masculino': '#00BFFF', 'Femenino': '#FFD700' } }
+          { data: estado, key: 'estadoVal', colors: { 'Ocupado': 'var(--celeste)', 'Desocupado': 'var(--amarillo)' } },
+          { data: tipo, key: 'tipoVal', colors: { 'Formal': 'var(--celeste)', 'Informal': 'var(--amarillo)' } },
+          { data: genero, key: 'generoVal', colors: { 'Masculino': 'var(--celeste)', 'Femenino': 'var(--amarillo)' } }
         ];
 
         grupos.forEach(g => {
@@ -158,7 +155,32 @@ export default function MapaEmpleo() {
         setPuntos(puntosMap);
       }
     });
-  }, [año, estado, tipo, genero]);
+  }, [año, estado, tipo, genero, provincia]);
+
+  // Datos para el gráfico
+  const datosGrafico = () => {
+    const grupo = grupoActivo === 'estado' ? estado :
+                  grupoActivo === 'tipo' ? tipo :
+                  grupoActivo === 'genero' ? genero : [];
+
+    if (grupo.length === 0) {
+      const total = puntos.reduce((acc, p) => acc + p.count, 0);
+      return [{ name: 'Total', value: total, color: 'var(--celeste)' }];
+    }
+
+    const totalTodos = puntos.reduce((acc, p) => acc + p.count, 0);
+
+    return grupo.map(valor => {
+      const color = (valor === 'Ocupado' || valor === 'Formal' || valor === 'Masculino') ? 'var(--celeste)' : 'var(--amarillo)';
+      const valorCount = puntos.filter(p => p.color === color).reduce((acc, p) => acc + p.count, 0);
+      return {
+        name: valor,
+        value: valorCount,
+        percentage: ((valorCount / totalTodos) * 100).toFixed(1),
+        color
+      };
+    });
+  };
 
   return (
     <div className="mapa-empleo">
@@ -177,10 +199,44 @@ export default function MapaEmpleo() {
               ))}
             </select>
           </div>
+
+          <GraficoTorta data={datosGrafico()} />
         </div>
 
         {/* Columna centro */}
         <div className="columna-centro">
+            <div className="bloque-select-simple">
+            <label htmlFor="provincia">Provincia</label>
+            <select id="provincia" value={provincia} onChange={e => setProvincia(e.target.value)}>
+              <option value="Todas">Todas</option>
+              <option value="Buenos Aires">Buenos Aires</option>
+              <option value="Santa Fe">Santa Fe</option>
+              <option value="Córdoba">Córdoba</option>
+              <option value="Mendoza">Mendoza</option>
+              <option value="Entre Ríos">Entre Ríos</option>
+              <option value="Chaco">Chaco</option>
+              <option value="Misiones">Misiones</option>
+              <option value="Formosa">Formosa</option>
+              <option value="Santiago del Estero">Santiago del Estero</option>
+              <option value="Jujuy">Jujuy</option>
+              <option value="Salta">Salta</option>
+              <option value="Tucumán">Tucumán</option>
+              <option value="San Juan">San Juan</option>
+              <option value="San Luis">San Luis</option>
+              <option value="La Rioja">La Rioja</option>
+              <option value="Catamarca">Catamarca</option>
+              <option value="Río Negro">Río Negro</option>
+              <option value="Neuquén">Neuquén</option>
+              <option value="Chubut">Chubut</option>
+              <option value="Santa Cruz">Santa Cruz</option>
+              <option value="Tierra del Fuego">Tierra del Fuego</option>
+              <option value="La Pampa">La Pampa</option>
+              <option value="Ciudad Autónoma de Buenos Aires">CABA</option>
+            </select>
+          </div>
+
+
+
           <div className="grupo-filtro">
             <p className="titulo-filtro">Estado laboral</p>
             <div className="checkbox-group">
