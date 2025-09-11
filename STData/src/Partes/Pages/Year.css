@@ -1,0 +1,107 @@
+/* Página completa */
+.year-page {
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--fondo);
+  font-family: 'Aileron', sans-serif;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* Layout 2 columnas */
+.year-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr;
+  gap: 40px;
+}
+
+/* Columna izquierda */
+.year-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Slider */
+.slider-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider-container label {
+  font-family: 'TT Fors', sans-serif;
+  font-size: 3.4rem;
+  color: var(--Azul);
+}
+
+.slider-container .anio {
+  font-family: 'Spectral', serif;
+  font-style: italic;
+  font-size: 3.4rem;
+}
+
+/* Fondo celeste de slider */
+.slider-bg {
+  background: var(--celeste);      
+  border-radius: 20px;             
+  padding: 15px 0;                 
+  display: flex;
+  align-items: center;
+
+}
+
+/* Barra blanca */
+.slider-bg input[type="range"] {
+-webkit-appearance: none;
+  width: 100%;                    
+  background: var(--blanco);       
+  height: 12px;                   
+  border-radius: 2px;              
+  outline: none;
+}
+
+.slider-bg input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: var(--amarillo);
+
+  cursor: pointer;
+}
+
+.slider-bg input[type="range"]::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: var(--amarillo);
+  cursor: pointer;
+}
+
+/* Texto columna izquierda */
+.texto-left {
+  font-family: 'Aileron', sans-serif;
+  font-size: 1rem;
+  line-height: 1.1;
+  color: var(--Letras);
+  text-align: justify;
+  margin-top: -3%;
+}
+
+/* Columna derecha */
+.year-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top:8%;
+}
+
+/* Texto columna derecha */
+.texto-right {
+  font-family: 'Aileron', sans-serif;
+  font-size: 1rem;
+  line-height: 1.09;
+  color: var(--Letras);
+  text-align: justify;
+}
+
