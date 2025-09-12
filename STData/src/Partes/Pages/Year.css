@@ -1,4 +1,3 @@
-/* Página completa */
 .year-page {
   width: 100vw;
   min-height: 100vh;
@@ -8,14 +7,12 @@
   box-sizing: border-box;
 }
 
-/* Layout 2 columnas */
 .year-layout {
   display: grid;
   grid-template-columns: 1.2fr 1.8fr;
   gap: 40px;
 }
 
-/* Columna izquierda */
 .year-left {
   display: flex;
   flex-direction: column;
@@ -23,7 +20,6 @@
   margin-left: 3%;
 }
 
-/* Slider */
 .slider-container {
   display: flex;
   flex-direction: column;
@@ -41,7 +37,6 @@
   font-size: 3.4rem;
 }
 
-/* Fondo celeste de slider */
 .slider-bg {
   background: var(--celeste);      
   border-radius: 20px;             
@@ -51,7 +46,6 @@
 
 }
 
-/* Barra blanca */
 .slider-bg input[type="range"] {
 -webkit-appearance: none;
   width: 100%;                    
@@ -79,7 +73,6 @@
   cursor: pointer;
 }
 
-/* Texto columna izquierda */
 .texto-left {
   font-family: 'Aileron', sans-serif;
   font-size: 1rem;
@@ -87,9 +80,9 @@
   color: var(--Letras);
   text-align: justify;
   margin-top: -3%;
+  margin-left: 0.5%;
 }
 
-/* Columna derecha */
 .year-right {
   display: flex;
   flex-direction: column;
@@ -98,7 +91,6 @@
   margin-right: 3%;
 }
 
-/* Texto columna derecha */
 .texto-right {
   font-family: 'Aileron', sans-serif;
   font-size: 1rem;
@@ -107,3 +99,8 @@
   text-align: justify;
 }
 
+.area-chart-container {
+  height: 200px;      
+  width: 50%;         
+  margin-top: 100px;    
+}

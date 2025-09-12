@@ -33,7 +33,6 @@ const CustomizedContent = ({ x, y, width, height, depth, name }) => {
         }}
       />
 
-      {/* Nombre del grupo (padre) */}
       {isParent && width > 50 && height > 30 && (
         <text
           x={x + 5}
@@ -46,7 +45,6 @@ const CustomizedContent = ({ x, y, width, height, depth, name }) => {
         </text>
       )}
 
-      {/* Nombre de los hijos, SIN número */}
       {!isParent && width > 40 && height > 20 && (
         <text
           x={x + width / 2}

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import TreemapRecharts from "../Charts/TreemapRecharts";
+import AreaChartActivos from "../Charts/AreaChart"; // <-- importamos AreaChart
 import "./Year.css";
 
 export default function Year() {
   const [año, setAño] = useState(2016);
   const [treemapData, setTreemapData] = useState([]);
+  const [csvRows, setCsvRows] = useState([]); // <-- guardamos las filas filtradas para el AreaChart
 
   useEffect(() => {
     fetch("/BasesLimpias/eph_full.csv")
@@ -22,6 +24,8 @@ export default function Year() {
           "50-70": { Formal: 0, Informal: 0, Desocupado: 0 },
         };
 
+        const parsedRows = [];
+
         rows.forEach((row) => {
           if (!row) return;
           const cells = row.split(",");
@@ -31,6 +35,8 @@ export default function Year() {
           });
 
           if (Number(data.year) !== año) return; // filtramos por año
+
+          parsedRows.push(data); // guardamos fila filtrada para AreaChart
 
           const edad = Number(data.CH06);
           let grupo = "";
@@ -62,6 +68,7 @@ export default function Year() {
         }));
 
         setTreemapData(treemap);
+        setCsvRows(parsedRows); // <-- guardamos datos para AreaChart
       });
   }, [año]);
 
@@ -112,6 +119,10 @@ export default function Year() {
             <p>
               Se puede observar cómo se distribuye el empleo según los rangos de edad, hasta qué momento permanecen activos varones y mujeres, y cuántas personas están ocupadas, desocupadas o inactivas en cada grupo. Las diferencias por género se acentúan con la edad, revelando desigualdades en relación al trabajo, responsabilidades familiares, oportunidades formales y estabilidad económica.
             </p>
+          </div>
+          
+            <div className="area-chart-container">
+            <AreaChartActivos data={csvRows} title="eee"/>
           </div>
         </div>
       </div>

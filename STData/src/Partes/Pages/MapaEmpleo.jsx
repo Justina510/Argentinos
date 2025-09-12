@@ -263,11 +263,11 @@ export default function MapaEmpleo() {
             <div className="checkbox-group">
               <label>
                 <input type="checkbox" checked={genero.includes('Masculino')} onChange={() => toggleSeleccion('Masculino', genero, setGenero, 'genero')}/>
-                Masculino
+                Varones
               </label>
               <label>
                 <input type="checkbox" checked={genero.includes('Femenino')} onChange={() => toggleSeleccion('Femenino', genero, setGenero, 'genero')}/>
-                Femenino
+                Mujeres
               </label>
             </div>
           </div>
