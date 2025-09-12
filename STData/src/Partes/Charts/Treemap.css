@@ -1,0 +1,18 @@
+.treemap-container {
+  font-family: 'Aileron', sans-serif;
+  margin-top: 1rem;
+}
+
+.treemap-title {
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  font-family: 'Aileron', sans-serif;
+}
+
+.treemap-text {
+  font-size: 0.9rem;
+  font-weight: bold;
+  font-family: 'Aileron', sans-serif;
+}

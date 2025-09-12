@@ -106,70 +106,74 @@ export default function MapaEmpleo() {
     }
   }
 
-  useEffect(() => {
-    Papa.parse('/BasesLimpias/eph_full.csv', {
-      download: true,
-      header: true,
-      complete: (result) => {
-        const datosFiltrados = result.data
-          .map(d => {
-            const añoCSV = parseInt(String(d.year).trim(), 10);
-            if (isNaN(añoCSV) || añoCSV !== año) return null;
+ useEffect(() => {
+  Papa.parse('/BasesLimpias/eph_full.csv', {
+    download: true,
+    header: true,
+    complete: (result) => {
+      const datosFiltrados = result.data
+        .map(d => {
+          const añoCSV = parseInt(String(d.year).trim(), 10);
+          if (isNaN(añoCSV) || añoCSV !== año) return null;
 
-            let prov = d.PROVINCIA?.trim();
-            if (!prov || prov === "") {
-              const aglo = d['﻿AGLOMERADO']?.trim();
-              prov = aglomeradoAProvincia[aglo] || null;
-            }
-            if (!prov) return null;
+          
+          let prov = d.PROVINCIA?.trim();
+          if (!prov || prov === "") {
+            const aglo = d['﻿AGLOMERADO']?.trim();
+            prov = aglomeradoAProvincia[aglo] || null;
+          }
+          if (!prov) return null;
+          if (provincia !== "Todas" && prov !== provincia) return null;
 
-            if (provincia !== "Todas" && prov !== provincia) return null;
+       
+          const estadoVal = d.ESTADO?.trim() || null;
+          const rawVal = Number(String(d.PP07G4).trim());
+          let tipoVal = null;
+          if (!isNaN(rawVal)) {
+            if (Math.round(rawVal) === 1) tipoVal = 'Formal';
+            else if (Math.round(rawVal) === 2) tipoVal = 'Informal';
+          }
+          const generoVal = d.CH04?.trim() === 'Mujer' ? 'Femenino' : 'Masculino';
 
-            const estadoVal = d.ESTADO?.trim() || null;
-            const rawVal = Number(String(d.PP07G4).trim());
-            let tipoVal = null;
-            if (!isNaN(rawVal)) {
-              if (Math.round(rawVal) === 1) tipoVal = 'Formal';
-              else if (Math.round(rawVal) === 2) tipoVal = 'Informal';
-            }
-            const generoVal = d.CH04?.trim() === 'Mujer' ? 'Femenino' : 'Masculino';
-            
-            return { prov, estadoVal, tipoVal, generoVal };
-          })
-          .filter(d => d !== null);
+          // Pondera
+          const ponderaVal = Number(String(d.PONDERA).trim()) || 1;
 
-        const puntosMap = [];
+          return { prov, estadoVal, tipoVal, generoVal, pondera: ponderaVal };
+        })
+        .filter(d => d !== null);
 
-        const grupos = [
-          { data: estado, key: 'estadoVal', colors: { 'Ocupado': 'var(--celeste)', 'Desocupado': 'var(--amarillo)' } },
-          { data: tipo, key: 'tipoVal', colors: { 'Formal': 'var(--celeste)', 'Informal': 'var(--amarillo)' } },
-          { data: genero, key: 'generoVal', colors: { 'Masculino': 'var(--celeste)', 'Femenino': 'var(--amarillo)' } }
-        ];
+      const puntosMap = [];
 
-        grupos.forEach(g => {
-          if (g.data.length === 0) return;
-          g.data.forEach(valorGrupo => {
-            const filtered = datosFiltrados.filter(d => d[g.key] === valorGrupo);
-            const countsByProv = {};
-            filtered.forEach(d => {
-              countsByProv[d.prov] = (countsByProv[d.prov] || 0) + 1;
-            });
-            Object.entries(countsByProv).forEach(([prov, count]) => {
-              puntosMap.push({
-                PROVINCIA: prov,
-                count,
-                color: g.colors[valorGrupo] || '#00BFFF'
-              });
+      const grupos = [
+        { data: estado, key: 'estadoVal', colors: { 'Ocupado': 'var(--celeste)', 'Desocupado': 'var(--amarillo)' } },
+        { data: tipo, key: 'tipoVal', colors: { 'Formal': 'var(--celeste)', 'Informal': 'var(--amarillo)' } },
+        { data: genero, key: 'generoVal', colors: { 'Masculino': 'var(--celeste)', 'Femenino': 'var(--amarillo)' } }
+      ];
+
+      grupos.forEach(g => {
+        if (g.data.length === 0) return;
+        g.data.forEach(valorGrupo => {
+          const filtered = datosFiltrados.filter(d => d[g.key] === valorGrupo);
+          const countsByProv = {};
+          filtered.forEach(d => {
+            countsByProv[d.prov] = (countsByProv[d.prov] || 0) + d.pondera;
+          });
+          Object.entries(countsByProv).forEach(([prov, count]) => {
+            puntosMap.push({
+              PROVINCIA: prov,
+              count,
+              color: g.colors[valorGrupo] || '#00BFFF'
             });
           });
         });
+      });
 
-        setPuntos(puntosMap);
-      }
-    });
-  }, [año, estado, tipo, genero, provincia]);
+      setPuntos(puntosMap);
+    }
+  });
+}, [año, estado, tipo, genero, provincia]);
 
-  // Datos para el gráfico
+
   const datosGrafico = () => {
     const grupo = grupoActivo === 'estado' ? estado :
                   grupoActivo === 'tipo' ? tipo :
@@ -201,7 +205,7 @@ export default function MapaEmpleo() {
       </div>
 
       <div className="layout-3columnas">
-        {/* Columna izquierda */}
+        {/* izquierda */}
         <div className="columna-izquierda">
           <div className="bloque-select-simple">
             <label htmlFor="año">Año</label>
@@ -215,7 +219,7 @@ export default function MapaEmpleo() {
           <GraficoTorta data={datosGrafico()} />
         </div>
 
-        {/* Columna centro */}
+        {/*centro */}
         <div className="columna-centro">
           <div className="bloque-select-simple">
             <label htmlFor="provincia">Provincia</label>
@@ -271,12 +275,12 @@ export default function MapaEmpleo() {
 
         
               <div className="texto-abajo">
-    La estructura laboral argentina se despliega provincia por provincia, año tras año, revelando cómo se distribuyen las personas ocupadas y desocupadas, el trabajo formal e informal, y las diferencias entre géneros. Cada selección permite observar cómo varía el empleo en función del territorio, el tiempo y las condiciones sociales. Los datos provienen de la Encuesta Permanente de Hogares (EPH), relevada por el INDEC y actualizada hasta el primer trimestre de 2025.
+    La estructura laboral argentina se despliega provincia por provincia, año tras año, revelando cómo se distribuyen las personas ocupadas y desocupadas, el trabajo formal e informal, y las diferencias entre géneros. Cada selección permite observar cómo varía el empleo en función del territorio, el tiempo y las condiciones sociales. calculada mediante la ponderación oficial aplicada por el INDEC sobre los datos relevados por la Encuesta Permanente de Hogares y actualizada hasta el primer trimestre de 2025.
   </div>
 
 
 
-        {/* Columna derecha */}
+        {/* derecha */}
         <div className="columna-derecha">
           <MapChart puntos={puntos} />
         </div>

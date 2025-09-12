@@ -9,6 +9,7 @@ function App() {
       <Intro />
       <MapaEmpleo />
       <Year/>
+      
     </div>
   );
 }

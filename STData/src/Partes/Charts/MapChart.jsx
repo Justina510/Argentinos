@@ -3,6 +3,13 @@ import provinciasCoords from '../../Data/provinciasCoords.js';
 import 'leaflet/dist/leaflet.css';
 
 function MapChart({ puntos }) {
+  if (!puntos || puntos.length === 0) return null;
+
+  // Calculamos el count máximo para normalizar radios
+  const maxCount = Math.max(...puntos.map(p => p.count));
+  const minRadius = 5;   // radio mínimo en píxeles
+  const maxRadius = 40;  // radio máximo en píxeles
+
   return (
     <MapContainer center={[-38, -63]} zoom={4} className="mapa-leaflet">
       <TileLayer
@@ -13,15 +20,18 @@ function MapChart({ puntos }) {
         const base = provinciasCoords[p.PROVINCIA.trim()];
         if (!base) return null;
 
+        // Escalamos el radio según pondera
+        const radius = minRadius + (p.count / maxCount) * (maxRadius - minRadius);
+
         return (
           <CircleMarker
             key={i}
             center={base}
-            radius={3 + Math.sqrt(p.count) * 0.5} // círculos más chicos
+            radius={radius}
             pathOptions={{ color: p.color, fillColor: p.color, fillOpacity: 0.6 }}
           >
             <Tooltip direction="top" offset={[0, -2]}>
-              {p.count} personas
+              {p.count.toLocaleString()} personas
             </Tooltip>
           </CircleMarker>
         );

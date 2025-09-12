@@ -14,12 +14,12 @@ const provinciasCoords = {
   "Misiones": [-26.92, -54.59],
   "Neuquén": [-38.95, -70.06],
   "Río Negro": [-40.80, -67.50],
-  "Salta": [-24.80, -65.41],
+  "Salta": [-25.40, -65.41],
   "San Juan": [-30.90, -68.80],
   "San Luis": [-33.30, -66.35],
   "Santa Cruz": [-48.80, -69.00],
   "Santa Fe": [-31.60, -60.70],
-  "Santiago del Estero": [-27.80, -64.26],
+  "Santiago del Estero": [-27.80, -63.26],
   "Tierra del Fuego": [-54.30, -67.80],
   "Tucumán": [-26.95, -65.35]
 };
