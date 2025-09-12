@@ -1,4 +1,3 @@
-// src/Partes/Pages/intro.jsx
 import React from 'react';
 import './Intro.css';
 
@@ -20,13 +19,7 @@ function Intro() {
         />
         <div className="intro-texto">
           <p>
-            En este trabajo se analiza el período comprendido entre 2016 y 2025, marcado
-            por irregularidades profundas en el mercado laboral argentino y una inflación
-            persistente que atraviesa la vida cotidiana. A través de datos provenientes
-            del EPH y del IPC (INDEC), exploraremos el empleo y el desempleo, la formalidad
-            o su ausencia, y cómo estos fenómenos se proyectan sobre la población. También
-            nos detendremos en un aspecto muchas veces invisibilizado: el impacto de la
-            economía en la salud mental de las personas.
+          En este trabajo se analiza el período comprendido entre 2016 y 2025, marcado por irregularidades profundas en el mercado laboral argentino y una inflación persistente que atraviesa la vida cotidiana. A través de datos provenientes del EPH y del IPC (INDEC), exploraremos el empleo y el desempleo, la formalidad o su ausencia, y cómo estos fenómenos se proyectan sobre la población. También nos detendremos en una dimensión cada vez más visible: el impacto emocional del trabajo en contextos de presión económica.
           </p>
           <img src="/Imagenes/Flecha.webp" alt="Flecha decorativa" className="flecha" />
         </div>
