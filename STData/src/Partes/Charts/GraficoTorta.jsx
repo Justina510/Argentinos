@@ -22,8 +22,9 @@ export default function GraficoTorta({ data }) {
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value, name, props) => [`${value}`, 'Personas']} 
-          />
+  formatter={(value, name, props) => [`${Number(value).toLocaleString('es-AR')}`, 'Personas']} 
+/>
+
           <Legend />
         </PieChart>
       )}

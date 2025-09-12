@@ -3,10 +3,11 @@ import provinciasCoords from '../../Data/provinciasCoords.js';
 import 'leaflet/dist/leaflet.css';
 
 function MapChart({ puntos }) {
-  if (!puntos || puntos.length === 0) return null;
+  // Si no hay puntos, mostramos el mapa sin círculos
+  const hasData = puntos && puntos.length > 0;
 
-  // Calculamos el count máximo para normalizar radios
-  const maxCount = Math.max(...puntos.map(p => p.count));
+  // Evitamos errores si no hay datos
+  const maxCount = hasData ? Math.max(...puntos.map(p => p.count)) : 1;
   const minRadius = 5;   // radio mínimo en píxeles
   const maxRadius = 40;  // radio máximo en píxeles
 
@@ -16,26 +17,27 @@ function MapChart({ puntos }) {
         attribution='&copy; OpenStreetMap contributors'
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       />
-      {puntos.map((p, i) => {
-        const base = provinciasCoords[p.PROVINCIA.trim()];
-        if (!base) return null;
+      
+      {hasData &&
+        puntos.map((p, i) => {
+          const base = provinciasCoords[p.PROVINCIA.trim()];
+          if (!base) return null;
 
-        // Escalamos el radio según pondera
-        const radius = minRadius + (p.count / maxCount) * (maxRadius - minRadius);
+          const radius = minRadius + (p.count / maxCount) * (maxRadius - minRadius);
 
-        return (
-          <CircleMarker
-            key={i}
-            center={base}
-            radius={radius}
-            pathOptions={{ color: p.color, fillColor: p.color, fillOpacity: 0.6 }}
-          >
-            <Tooltip direction="top" offset={[0, -2]}>
-              {p.count.toLocaleString()} personas
-            </Tooltip>
-          </CircleMarker>
-        );
-      })}
+          return (
+            <CircleMarker
+              key={i}
+              center={base}
+              radius={radius}
+              pathOptions={{ color: p.color, fillColor: p.color, fillOpacity: 0.6 }}
+            >
+              <Tooltip direction="top" offset={[0, -2]}>
+                {p.count.toLocaleString()} personas
+              </Tooltip>
+            </CircleMarker>
+          );
+        })}
     </MapContainer>
   );
 }

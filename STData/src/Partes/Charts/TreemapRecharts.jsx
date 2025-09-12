@@ -1,6 +1,5 @@
 import { Treemap, ResponsiveContainer, Tooltip } from "recharts";
 
-
 const AGE_COLORS = {
   "18-29": "var(--amarillo)",
   "30-39": "var(--celeste)",
@@ -15,8 +14,10 @@ const CHILD_COLORS = {
 };
 
 const CustomizedContent = ({ x, y, width, height, depth, name }) => {
-  const isParent = depth === 1; 
-  const fill = isParent ? AGE_COLORS[name] || "#ccc" : CHILD_COLORS[name] || "#eee";
+  const isParent = depth === 1;
+  const fill = isParent
+    ? AGE_COLORS[name] || "#ccc"
+    : CHILD_COLORS[name] || "#eee";
 
   return (
     <g>
@@ -27,14 +28,16 @@ const CustomizedContent = ({ x, y, width, height, depth, name }) => {
         height={height}
         style={{
           fill,
-          stroke: isParent ? "#ffffffff" : "#fff",
+          stroke: isParent ? "#ffffff" : "#fff",
           strokeWidth: isParent ? 2 : 1,
         }}
       />
+
+      {/* Nombre del grupo (padre) */}
       {isParent && width > 50 && height > 30 && (
         <text
-          x={x + 5} 
-          y={y + 15} 
+          x={x + 5}
+          y={y + 15}
           fill="#000"
           fontSize={14}
           fontWeight="bold"
@@ -43,6 +46,7 @@ const CustomizedContent = ({ x, y, width, height, depth, name }) => {
         </text>
       )}
 
+      {/* Nombre de los hijos, SIN número */}
       {!isParent && width > 40 && height > 20 && (
         <text
           x={x + width / 2}
@@ -68,9 +72,14 @@ export default function TreemapRecharts({ data, title }) {
           data={data}
           dataKey="size"
           content={<CustomizedContent />}
-          isAnimationActive={false} 
+          isAnimationActive={false}
         >
-          <Tooltip isAnimationActive={false} />
+          <Tooltip
+            isAnimationActive={false}
+            formatter={(value) =>
+              value ? Number(value).toLocaleString("es-AR") : ""
+            }
+          />
         </Treemap>
       </ResponsiveContainer>
     </div>
