@@ -17,7 +17,6 @@ export default function Year() {
         const headers = lines[0].split(",");
         const rows = lines.slice(1);
 
-        // Inicializamos contadores por grupo
         const groups = {
           "18-29": { Formal: 0, Informal: 0, Desocupado: 0 },
           "30-39": { Formal: 0, Informal: 0, Desocupado: 0 },
@@ -35,8 +34,8 @@ export default function Year() {
             data[h] = cells[i];
           });
 
-          if (Number(data.year) !== año) return; // filtramos por año
-          parsedRows.push(data); // guardamos fila filtrada
+          if (Number(data.year) !== año) return; 
+          parsedRows.push(data); 
 
           const edad = Number(data.CH06);
           let grupo = "";
@@ -57,7 +56,6 @@ export default function Year() {
           }
         });
 
-        // Convertimos a formato treemap
         const treemap = Object.keys(groups).map((g) => ({
           name: g,
           children: [
@@ -75,11 +73,11 @@ export default function Year() {
   return (
     <div className="year-page">
       <div className="year-layout">
-        {/* LADO IZQUIERDO */}
+
         <div className="year-left">
           <div className="slider-container">
             <label>
-              Año: <span className="anio">{año}</span>
+              AÑO: <span className="anio">{año}</span>
             </label>
             <div className="slider-bg">
               <input
@@ -103,7 +101,6 @@ export default function Year() {
           <TreemapRecharts data={treemapData} title="Distribución laboral por grupo etario" />
         </div>
 
-        {/* LADO DERECHO */}
         <div className="year-right">
           <div className="texto-right-burnout">
   <div className="texto-imagen-container">
@@ -130,14 +127,13 @@ export default function Year() {
 </div>
 
 
-          {/* GRAFICOS */}
           <div className="charts-row">
             <div className="area-chart-container">
               <AreaChartActivos data={csvRows} />
             </div>
 
             <div className="bar-chart-container">
-              <h3 style={{ textAlign: "center" }}>Distribución ocupacional por género y grupo etario</h3>
+              <h3 style={{ textAlign: "center" }}>Situación Ocupacional por edad y género</h3>
               <BarChartSegmented data={csvRows} />
             </div>
           </div>
