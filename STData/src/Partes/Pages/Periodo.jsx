@@ -1,11 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import "./Periodo.css";
 import LineaIPCIngreso from "../Charts/LineaIPCIngreso";
 import LineaSMVM from "../Charts/LineaSMVM";
 import LineaComparativa from "../Charts/LineaComparativa";
-
-
-
 
 export default function Periodo() {
   const [yearStart, setYearStart] = useState(2016);
@@ -13,7 +10,7 @@ export default function Periodo() {
 
   const handleStartChange = (e) => {
     const value = Number(e.target.value);
-    if (value < yearEnd) setYearStart(value); 
+    if (value < yearEnd) setYearStart(value);
   };
 
   const handleEndChange = (e) => {
@@ -21,15 +18,17 @@ export default function Periodo() {
     if (value > yearStart) setYearEnd(value);
   };
 
+  const startLabelLeft = useMemo(() => ((yearStart - 2016) / 9) * 100, [yearStart]);
+  const endLabelLeft = useMemo(() => ((yearEnd - 2016) / 9) * 100, [yearEnd]);
+
   return (
     <div className="periodo-page">
       <h2 className="periodo-title">PERIODO</h2>
 
       <div className="periodo-layout">
- 
+
         <div className="periodo-left">
           <div className="periodo-slider-container">
-
             <div className="slider-line"></div>
 
             <input
@@ -42,7 +41,7 @@ export default function Periodo() {
             />
             <div
               className="year-label start"
-              style={{ left: `${((yearStart - 2016) / 9) * 100}%` }}
+              style={{ left: `${startLabelLeft}%` }}
             >
               {yearStart}
             </div>
@@ -57,7 +56,7 @@ export default function Periodo() {
             />
             <div
               className="year-label end"
-              style={{ left: `${((yearEnd - 2016) / 9) * 100}%` }}
+              style={{ left: `${endLabelLeft}%` }}
             >
               {yearEnd}
             </div>
@@ -74,9 +73,7 @@ export default function Periodo() {
             </p>
           </div>
 
-            <LineaIPCIngreso yearStart={yearStart} yearEnd={yearEnd} />
-
-
+          <LineaIPCIngreso yearStart={yearStart} yearEnd={yearEnd} />
         </div>
 
         <div className="periodo-right">
@@ -98,12 +95,12 @@ export default function Periodo() {
             <p>A través de tres gráficos, se observa la evolución del índice de precios, el crecimiento del salario mínimo en pesos, y la relación entre inflación y empleo.</p>
           </div>
 
-
           <div className="periodo-charts">
             <LineaSMVM yearStart={yearStart} yearEnd={yearEnd} />
             <LineaComparativa yearStart={yearStart} yearEnd={yearEnd} />
-            </div>
+          </div>
         </div>
+
       </div>
     </div>
   );

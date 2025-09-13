@@ -13,19 +13,24 @@ export default function LineaIPC({ yearStart, yearEnd }) {
       .then(text => {
         const parsed = Papa.parse(text, { header: true, delimiter: ";" }).data;
 
-        const ipcData = parsed
-          .filter(d => d.Descripcion === "NIVEL GENERAL" && d.Region === "Nacional")
-          .map(d => {
-            const year = parseInt(d.Periodo.slice(0, 4));
-            const ipc = parseFloat(d.Indice_IPC.replace(",", "."));
-            return { period: d.Periodo, year, ipc };
-          })
-          .filter(d => !isNaN(d.ipc) && d.ipc > 0 && d.year >= yearStart && d.year <= yearEnd);
+        const ipcData = [];
+        const ticksSet = new Set();
+
+        for (const d of parsed) {
+          if (d.Descripcion !== "NIVEL GENERAL" || d.Region !== "Nacional") continue;
+
+          const year = parseInt(d.Periodo.slice(0, 4));
+          if (isNaN(year) || year < yearStart || year > yearEnd) continue;
+
+          const ipc = parseFloat(d.Indice_IPC.replace(",", "."));
+          if (isNaN(ipc) || ipc <= 0) continue;
+
+          ipcData.push({ period: d.Periodo, year, ipc });
+          ticksSet.add(d.Periodo.slice(0, 4));
+        }
 
         setData(ipcData);
-
-        const ticks = [...new Set(ipcData.map(d => d.period.slice(0,4)))];
-        setYearTicks(ticks);
+        setYearTicks([...ticksSet]);
       });
   }, [yearStart, yearEnd]);
 
@@ -37,12 +42,12 @@ export default function LineaIPC({ yearStart, yearEnd }) {
           <XAxis 
             dataKey="period"
             ticks={yearTicks.map(y => y + "01")}
-            tickFormatter={(tick) => tick.slice(0,4)} 
+            tickFormatter={tick => tick.slice(0,4)}
           />
           <YAxis tickFormatter={val => val + "%"} />
           <Tooltip 
             formatter={val => val + "%"} 
-            labelFormatter={label => "Periodo: " + label.slice(0,4) + "/" + label.slice(4,6)} 
+            labelFormatter={label => `Periodo: ${label.slice(0,4)}/${label.slice(4,6)}`} 
           />
           <Legend />
           <Line type="monotone" dataKey="ipc" stroke="#79c0dc" name="IPC (%)" />

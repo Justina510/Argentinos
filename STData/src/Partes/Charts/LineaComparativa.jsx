@@ -7,78 +7,60 @@ export default function LineaComparativa({ yearStart, yearEnd }) {
   const [yearTicks, setYearTicks] = useState([]);
 
   useEffect(() => {
-    const fetchIPC = fetch("/BasesLimpias/serie_ipc_divisiones.csv")
-      .then(res => res.text())
-      .then(text => {
-        const parsed = Papa.parse(text, { header: true, delimiter: ";" }).data;
-        const ipcData = parsed
-          .filter(d => d.Descripcion === "NIVEL GENERAL" && d.Region === "Nacional")
-          .map(d => {
-            const year = parseInt(d.Periodo.slice(0, 4));
-            const ipc = parseFloat(d.Indice_IPC.replace(",", "."));
-            return { year, ipc };
-          })
-          .filter(d => !isNaN(d.ipc) && d.ipc > 0 && d.year >= yearStart && d.year <= yearEnd);
+    const parseCSV = (url, delimiter = ",") =>
+      fetch(url)
+        .then(res => res.text())
+        .then(text => Papa.parse(text, { header: true, delimiter }).data);
 
-        const minYear = Math.min(...ipcData.map(d => d.year));
-        const baseIPC = ipcData.find(d => d.year === minYear)?.ipc || 100;
-        const ipcNormalized = ipcData.map(d => ({ year: d.year, ipc: (d.ipc / baseIPC) * 100 }));
+    Promise.all([
+      parseCSV("/BasesLimpias/serie_ipc_divisiones.csv", ";"),
+      parseCSV("/BasesLimpias/eph_full.csv")
+    ]).then(([ipcRaw, ephRaw]) => {
 
-        return ipcNormalized;
-      });
+      const ipcData = ipcRaw
+        .filter(d => d.Descripcion === "NIVEL GENERAL" && d.Region === "Nacional")
+        .map(d => {
+          const year = parseInt(d.Periodo.slice(0, 4));
+          const ipc = parseFloat(d.Indice_IPC.replace(",", "."));
+          return { year, ipc };
+        })
+        .filter(d => !isNaN(d.ipc) && d.ipc > 0 && d.year >= yearStart && d.year <= yearEnd);
 
-    const fetchEPH = fetch("/BasesLimpias/eph_full.csv")
-      .then(res => res.text())
-      .then(text => {
-        const parsed = Papa.parse(text, { header: true, delimiter: "," }).data;
-        const ephData = parsed.filter(d => {
-          return ["Ocupado", "Desocupado"].includes(d.ESTADO) &&
-                 d.year >= yearStart && d.year <= yearEnd;
-        });
+      const minYear = Math.min(...ipcData.map(d => d.year));
+      const baseIPC = ipcData.find(d => d.year === minYear)?.ipc || 100;
+      const ipcNormalized = ipcData.map(d => ({ year: d.year, ipc: (d.ipc / baseIPC) * 100 }));
 
-        const grouped = {};
-        ephData.forEach(d => {
-          const y = d.year;
-          if (!grouped[y]) grouped[y] = { ocup: 0, desocup: 0 };
-          if (d.ESTADO === "Ocupado") grouped[y].ocup += 1;
-          if (d.ESTADO === "Desocupado") grouped[y].desocup += 1;
-        });
+      const ephData = ephRaw
+        .filter(d => ["Ocupado", "Desocupado"].includes(d.ESTADO) &&
+                     d.year >= yearStart && d.year <= yearEnd);
 
-        const ephPercent = Object.keys(grouped).map(y => {
-          const total = grouped[y].ocup + grouped[y].desocup;
-          return {
-            year: parseInt(y),
-            ocup: (grouped[y].ocup / total) * 100,
-            desocup: (grouped[y].desocup / total) * 100
-          };
-        });
+      const grouped = ephData.reduce((acc, d) => {
+        const y = parseInt(d.year);
+        if (!acc[y]) acc[y] = { ocup: 0, desocup: 0 };
+        if (d.ESTADO === "Ocupado") acc[y].ocup += 1;
+        else acc[y].desocup += 1;
+        return acc;
+      }, {});
 
-        return ephPercent;
-      });
+      const mergedData = Object.entries(grouped).map(([y, val]) => {
+        const ipcEntry = ipcNormalized.find(i => i.year === parseInt(y));
+        return ipcEntry ? { year: parseInt(y), ocup: val.ocup / (val.ocup + val.desocup) * 100, desocup: val.desocup / (val.ocup + val.desocup) * 100, ipc: ipcEntry.ipc } : null;
+      }).filter(d => d);
 
-    Promise.all([fetchIPC, fetchEPH]).then(([ipc, eph]) => {
-      const merged = eph.map(d => {
-        const ipcEntry = ipc.find(i => i.year === d.year);
-        return { year: d.year, ocup: d.ocup, desocup: d.desocup, ipc: ipcEntry ? ipcEntry.ipc : null };
-      }).filter(d => d.ipc !== null);
-
-      setData(merged);
-      setYearTicks(merged.map(d => d.year));
+      setData(mergedData);
+      setYearTicks(mergedData.map(d => d.year));
     });
-
   }, [yearStart, yearEnd]);
 
   return (
-    <div style={{ width: "100%", height: 450, marginTop: "40px"}}>
+    <div style={{ width: "100%", height: 450, marginTop: "40px" }}>
       <h3>Evolución comparativa: IPC vs Ocupados/Desocupados</h3>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 20, right: 40, left: 20, bottom: 20 }}>
           <XAxis dataKey="year" ticks={yearTicks} />
-          <YAxis yAxisId="left" tickFormatter={val => val + "%"} />
+          <YAxis yAxisId="left" tickFormatter={val => val.toFixed(1) + "%"} />
           <YAxis yAxisId="right" orientation="right" tickFormatter={val => val.toFixed(0)} />
-          <Tooltip 
-            formatter={(val, name) => name === "ipc" ? val.toFixed(1) + "%" : val.toFixed(1) + "%"} 
-          />
+          <Tooltip formatter={(val, name) => name === "ipc" ? val.toFixed(1) + "%" : val.toFixed(1) + "%"} />
           <Legend />
           <Line yAxisId="left" type="monotone" dataKey="ocup" stroke="#6ce5e8" name="Ocupados (%)" />
           <Line yAxisId="left" type="monotone" dataKey="desocup" stroke="#ff8d66" name="Desocupados (%)" />
