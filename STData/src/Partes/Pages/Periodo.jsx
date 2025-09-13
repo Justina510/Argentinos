@@ -1,5 +1,11 @@
 import { useState } from "react";
 import "./Periodo.css";
+import LineaIPCIngreso from "../Charts/LineaIPCIngreso";
+import LineaSMVM from "../Charts/LineaSMVM";
+import LineaComparativa from "../Charts/LineaComparativa";
+
+
+
 
 export default function Periodo() {
   const [yearStart, setYearStart] = useState(2016);
@@ -7,12 +13,12 @@ export default function Periodo() {
 
   const handleStartChange = (e) => {
     const value = Number(e.target.value);
-    if (value < yearEnd) setYearStart(value); // no se superponen
+    if (value < yearEnd) setYearStart(value); 
   };
 
   const handleEndChange = (e) => {
     const value = Number(e.target.value);
-    if (value > yearStart) setYearEnd(value); // no se superponen
+    if (value > yearStart) setYearEnd(value);
   };
 
   return (
@@ -20,13 +26,12 @@ export default function Periodo() {
       <h2 className="periodo-title">PERIODO</h2>
 
       <div className="periodo-layout">
-        {/* Izquierda: slider */}
+ 
         <div className="periodo-left">
           <div className="periodo-slider-container">
-            {/* Línea visual única */}
+
             <div className="slider-line"></div>
 
-            {/* Slider izquierdo */}
             <input
               type="range"
               min="2016"
@@ -42,7 +47,6 @@ export default function Periodo() {
               {yearStart}
             </div>
 
-            {/* Slider derecho */}
             <input
               type="range"
               min="2016"
@@ -59,7 +63,6 @@ export default function Periodo() {
             </div>
           </div>
 
-          {/* Texto explicativo debajo del slider */}
           <div className="texto-iz">
             <p>
               La inflación en Argentina, medida por el Índice de Precios al Consumidor (IPC),
@@ -70,9 +73,12 @@ export default function Periodo() {
               pierden valor rápidamente, generando tensiones económicas en todos los sectores sociales.
             </p>
           </div>
+
+            <LineaIPCIngreso yearStart={yearStart} yearEnd={yearEnd} />
+
+
         </div>
 
-        {/* Derecha: texto adicional */}
         <div className="periodo-right">
           <div className="texto-der">
             <p>
@@ -91,6 +97,12 @@ export default function Periodo() {
             </p>
             <p>A su vez, la inflación influye directamente en la estructura del empleo. Muchas empresas, especialmente las pequeñas y medianas, enfrentan dificultades para sostener sus costos operativos, lo que las lleva a reducir personal, informalizar vínculos laborales o frenar nuevas contrataciones. Esta situación debilita la calidad del empleo disponible y limita las oportunidades de inserción laboral formal</p>
           </div>
+
+
+          <div className="periodo-charts">
+            <LineaSMVM yearStart={yearStart} yearEnd={yearEnd} />
+            <LineaComparativa yearStart={yearStart} yearEnd={yearEnd} />
+            </div>
         </div>
       </div>
     </div>

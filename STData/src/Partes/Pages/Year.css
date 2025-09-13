@@ -214,3 +214,15 @@ ul.burnout-list li:nth-child(3)::before {
   background-color: var(--Azul); 
   border-radius: 50%;
 }
+.periodo-charts {
+  display: flex;
+  gap: 20px;   
+  justify-content: space-between;
+  flex-wrap: wrap; 
+}
+
+.periodo-charts > div {
+  flex: 1;
+  min-width: 300px; 
+  height: 450px; 
+}
