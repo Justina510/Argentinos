@@ -1,12 +1,11 @@
 @import url('./src/Fuentes/Fuentes.css');
 
-/* Elimina márgenes y scroll innecesario */
 html, body, #root, .App {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  background: var(--fondo); /* para que el fondo ocupe todo */
+  background: var(--fondo); 
   box-sizing: border-box;
 }
 
@@ -25,3 +24,4 @@ html, body, #root, .App {
   --naranja: #ff8d66;
 
 }
+

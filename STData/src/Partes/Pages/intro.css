@@ -1,4 +1,3 @@
-/* Intro general */
 .intro {
   background: var(--fondo);
   min-height: 100vh;
@@ -7,7 +6,6 @@
   padding-top: 3rem;
 }
 
-/* Nombre de autora */
 .autor {
   font-family: 'Aileron', sans-serif;
   font-size: clamp(1rem, 1.5vw, 1.4rem);
@@ -17,7 +15,6 @@
   text-align: left;
 }
 
-/* Bloque de títulos */
 .intro-titulos {
   margin-left: 8rem;
   margin-bottom: 2%;
@@ -43,18 +40,16 @@
   line-height: 1.2;
 }
 
-/* Contenido principal: imagen + texto */
 .intro-contenido {
   display: grid;
   grid-template-columns: minmax(400px, 1fr) minmax(500px, 1fr);
   align-items: start;
   gap: 1rem;
   width: 100%;
-  max-width: 1920px; /* Limita el ancho en monitores grandes */
+  max-width: 1920px; 
   margin: 0 auto;
 }
 
-/* Imagen principal */
 .imagen-principal {
   width: 110%;
   height: auto;
@@ -62,7 +57,6 @@
   display: block;
 }
 
-/* Contenedor del texto */
 .intro-texto {
   position: relative;
   max-width: 800px;
@@ -70,7 +64,6 @@
   box-sizing: border-box;
 }
 
-/* Texto explicativo */
 .intro-texto p {
   font-family: 'Aileron', sans-serif;
   font-size: clamp(1rem,1.3vw, 1.3rem);
@@ -81,7 +74,6 @@
   margin: 0;
 }
 
-/* Flecha decorativa */
 .flecha {
   position: absolute;
   bottom: -7vw;
@@ -90,7 +82,6 @@
   z-index: 1;
 }
 
-/* Gráfico decorativo */
 .grafico {
   position: absolute;
   top: 0;
@@ -102,7 +93,6 @@
   z-index: 0;
 }
 
-/* RESPONSIVE: tablets y móviles */
 @media (max-width: 1440px) {
   .intro-contenido {
     grid-template-columns: 1fr 1fr;

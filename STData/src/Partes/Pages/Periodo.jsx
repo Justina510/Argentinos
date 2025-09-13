@@ -95,7 +95,7 @@ export default function Periodo() {
               a bienes básicos y servicios esenciales. Incluso quienes logran insertarse en el mercado
               laboral muchas veces lo hacen en condiciones informales, perpetuando un ciclo de precariedad.
             </p>
-            <p>A su vez, la inflación influye directamente en la estructura del empleo. Muchas empresas, especialmente las pequeñas y medianas, enfrentan dificultades para sostener sus costos operativos, lo que las lleva a reducir personal, informalizar vínculos laborales o frenar nuevas contrataciones. Esta situación debilita la calidad del empleo disponible y limita las oportunidades de inserción laboral formal</p>
+            <p>A través de tres gráficos, se observa la evolución del índice de precios, el crecimiento del salario mínimo en pesos, y la relación entre inflación y empleo.</p>
           </div>
 
 
