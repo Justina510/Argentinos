@@ -18,6 +18,7 @@ export default function Periodo() {
     if (value > yearStart) setYearEnd(value);
   };
 
+  // Posiciones de las etiquetas en porcentaje
   const startLabelLeft = useMemo(() => ((yearStart - 2016) / 9) * 100, [yearStart]);
   const endLabelLeft = useMemo(() => ((yearEnd - 2016) / 9) * 100, [yearEnd]);
 
@@ -27,6 +28,7 @@ export default function Periodo() {
 
       <div className="periodo-layout">
 
+        {/* LADO IZQUIERDO */}
         <div className="periodo-left">
           <div className="periodo-slider-container">
             <div className="slider-line"></div>
@@ -76,6 +78,7 @@ export default function Periodo() {
           <LineaIPCIngreso yearStart={yearStart} yearEnd={yearEnd} />
         </div>
 
+        {/* LADO DERECHO */}
         <div className="periodo-right">
           <div className="texto-der">
             <p>

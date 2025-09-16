@@ -9,9 +9,9 @@ import {
   Bar,
 } from "recharts";
 
-// Leyenda personalizada
 const CustomLegend = ({ payload }) => {
-  // Orden deseado
+  if (!payload) return null;
+
   const order = [
     "Ocupados Mujer",
     "Ocupados Varón",
@@ -26,16 +26,19 @@ const CustomLegend = ({ payload }) => {
     .filter(Boolean);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
       {items.map((entry, index) => (
-        <div key={index} style={{ display: "flex", alignItems: "center", gap: "4px", marginLeft:"10px"}}>
+        <div
+          key={index}
+          style={{ display: "flex", alignItems: "center", gap: "4px" }}
+        >
           <div
             style={{
-              width: 12,
-              height: 12,
+              width: 14,
+              height: 14,
               backgroundColor: entry.color,
             }}
-          ></div>
+          />
           <span>{entry.value}</span>
         </div>
       ))}
@@ -44,7 +47,6 @@ const CustomLegend = ({ payload }) => {
 };
 
 export default function BarChartSegmented({ data }) {
-  // Grupos de edad
   const gruposEdad = [
     { min: 18, max: 29, name: "18-29" },
     { min: 30, max: 39, name: "30-39" },
@@ -52,32 +54,24 @@ export default function BarChartSegmented({ data }) {
     { min: 50, max: 70, name: "50-70" },
   ];
 
-  // Procesamos datos
   const chartData = gruposEdad.map((g) => {
     const filasGrupo = data.filter((d) => {
       const edad = Number(d.CH06);
       return edad >= g.min && edad <= g.max;
     });
 
-    const varonOcupado = filasGrupo
-      .filter((d) => d.CH04 === "Varón" && d.ESTADO === "Ocupado")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
-    const varonDesocupado = filasGrupo
-      .filter((d) => d.CH04 === "Varón" && d.ESTADO === "Desocupado")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
-    const varonInactivo = filasGrupo
-      .filter((d) => d.CH04 === "Varón" && d.ESTADO === "Inactivo")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
+    const sumByEstado = (sexo, estado) =>
+      filasGrupo
+        .filter((d) => d.CH04 === sexo && d.ESTADO === estado)
+        .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
 
-    const mujerOcupado = filasGrupo
-      .filter((d) => d.CH04 === "Mujer" && d.ESTADO === "Ocupado")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
-    const mujerDesocupado = filasGrupo
-      .filter((d) => d.CH04 === "Mujer" && d.ESTADO === "Desocupado")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
-    const mujerInactivo = filasGrupo
-      .filter((d) => d.CH04 === "Mujer" && d.ESTADO === "Inactivo")
-      .reduce((sum, d) => sum + Number(d.PONDERA || 0), 0);
+    const varonOcupado = sumByEstado("Varón", "Ocupado");
+    const varonDesocupado = sumByEstado("Varón", "Desocupado");
+    const varonInactivo = sumByEstado("Varón", "Inactivo");
+
+    const mujerOcupado = sumByEstado("Mujer", "Ocupado");
+    const mujerDesocupado = sumByEstado("Mujer", "Desocupado");
+    const mujerInactivo = sumByEstado("Mujer", "Inactivo");
 
     const total =
       varonOcupado +
@@ -100,6 +94,9 @@ export default function BarChartSegmented({ data }) {
 
   return (
     <div style={{ width: "100%", height: 450 }}>
+      <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
+        Situación Ocupacional por edad y género
+      </h3>
       <ResponsiveContainer>
         <BarChart
           data={chartData}

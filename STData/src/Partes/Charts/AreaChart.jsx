@@ -12,11 +12,11 @@ import {
 export default function AreaChartActivos({ data }) {
   if (!data || data.length === 0) return null;
 
-  // Edades que queremos mostrar en el eje X
+
   const edadesX = [18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
 
   const processedData = edadesX.map((edad) => {
-    // Filtramos solo ocupados de esa edad exacta
+
     const ocupadosEdad = data.filter(
       (d) => Number(d.CH06) === edad && d.ESTADO === "Ocupado"
     );

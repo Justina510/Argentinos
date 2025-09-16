@@ -11,21 +11,22 @@ export async function loadTreemapData(año) {
   ];
 
   const result = ageGroups.map(group => {
-    const groupRows = data.filter(
-      d =>
-        +d.year === año &&
-        +d.CH06 >= group.min &&
-        +d.CH06 <= group.max
-    );
+    const groupRows = data.filter(d => {
+      const year = Number(d.year);
+      const age = Number(d.CH06);
+      return year === año && age >= group.min && age <= group.max;
+    });
 
     const counts = { Formal: 0, Informal: 0, Desocupado: 0 };
 
     groupRows.forEach(r => {
-  const pp = parseFloat(r.PP07G4); // convertir a número
-  if (r.ESTADO?.toLowerCase() === "desocupado") counts.Desocupado++;
-  else if (pp === 10) counts.Formal++;
-  else if (pp === 2.0) counts.Informal++;
-});
+      const estado = r.ESTADO?.toLowerCase();
+      const pp = parseFloat(r.PP07G4);
+
+      if (estado === "desocupado") counts.Desocupado++;
+      else if (pp === 10) counts.Formal++;
+      else if (pp === 2) counts.Informal++;
+    });
 
     return {
       name: group.name,

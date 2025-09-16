@@ -15,7 +15,7 @@ export default function Fin() {
         El trabajo informal, la desigualdad de género, la desocupación juvenil y la inflación persistente configuran un escenario que afecta profundamente a los argentinos.
         Pero hay un aspecto que permanece en las sombras: la salud mental de los trabajadores.
         Este proyecto nació con la intención de visibilizar cómo el empleo y la economía impactan en el bienestar emocional de las personas. 
-        Sin embargo, la falta de datos concretos y la escasa atención institucional dificultan esa tarea. La salud mental sigue siendo un tema marginal en las estadísticas laborales, a pesar de su relevancia.
+        Sin embargo, la falta de datos concretos y la escasa atención dificultan esa tarea. La salud mental sigue siendo un tema marginal en las estadísticas laborales, a pesar de su relevancia.
       </p>
 
       <div className="fin-graficos">
