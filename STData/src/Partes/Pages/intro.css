@@ -49,7 +49,7 @@
   align-items: start;
   gap: 1rem;
   width: 100%;
-  max-width: 1920px; /* Limita el ancho en monitores grandes */
+  max-width: 1920px;
   margin: 0 auto;
 }
 
